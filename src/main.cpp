@@ -204,7 +204,7 @@ void editmedals(string filename){
 
 			if (writeFile.is_open())
 			{
-				char *b = (char*)malloc(18 * sizeof(char));
+				char b[18];
 
 				for (int j = 0; j < 9; j++) {
 					b[j * 2] = (char)(umed[j] & 0xFF);
@@ -212,7 +212,7 @@ void editmedals(string filename){
 				}
 
 				string newMedals(b);
-
+				newMedals.resize(18);
 				string newData = p1 + newMedals + p3;
 
 				writeFile << newData;
