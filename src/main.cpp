@@ -32,7 +32,7 @@ void editstats(string filename);
 
 string backupfile(void);
 
-#define numberofbytesinfile 4357 // last offset 4356=0x1104
+#define numberofbytesinfile 4356 // last offset 4356=0x1104
 #define medalsstart 1404 // 0x57c
 #define medalsend 1422 // 0x58d
 #define statsstart 3980 // 0xf8c
@@ -141,6 +141,7 @@ void editmedals(string filename){
 	medals = fullfile.substr(medalsstart, medalsend - medalsstart);
 	p3 = fullfile.substr(medalsend);
 
+	inFile.close();
 	/* Decode medals string
 		// split each medal from string
 		// decode medal and store in var
@@ -177,8 +178,8 @@ void editmedals(string filename){
 		cout << "Frenzy" << "\t\t\t" << umed[1] << endl;
 		cout << endl;
 
-		cout << "Change or no change?" << endl;
-		cout << "c: change medal count\t e: exit to main menu" << endl;
+		cout << "Change, no change, write to file?" << endl;
+		cout << "c: change medal count\t w:write to file\t e: exit to main menu" << endl;
 		string answer;
 		getline(cin, answer);
 
@@ -197,6 +198,38 @@ void editmedals(string filename){
 				stringstream myStream(input);
 				myStream >> umed[i];
 			}
+		}
+		if (answer == "w") {
+			ofstream writeFile(filename, ios::out | ios::binary);
+
+			if (writeFile.is_open())
+			{
+				char *b = (char*)malloc(18 * sizeof(char));
+
+				for (int j = 0; j < 9; j++) {
+					b[j * 2] = (char)(umed[j] & 0xFF);
+					b[j * 2 + 1] = (char)(umed[j] >> 8);
+				}
+
+				string newMedals(b);
+
+				string newData = p1 + newMedals + p3;
+
+				writeFile << newData;
+
+				system("cls");
+
+				cout << "Write Complete" << endl;
+				cout << endl;
+				break;
+			}
+			else
+			{
+				cout << "Bad filename or other error." << endl;
+				cout << endl;
+				break;
+			}
+			writeFile.close();
 		}
 	}
 }
